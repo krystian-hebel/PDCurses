@@ -99,7 +99,7 @@ initscr
 
 #include <stdlib.h>
 
-char ttytype[128];
+char ttytype[128] = "pdcurses|PDCurses for %s";
 
 const char *_curses_notice = "PDCurses " PDC_VERDOT " - " __DATE__;
 
@@ -241,7 +241,8 @@ WINDOW *initscr(void)
 
     def_shell_mode();
 
-    sprintf(ttytype, "pdcurses|PDCurses for %s", PDC_sysname());
+    // TODO:
+    //sprintf(ttytype, "pdcurses|PDCurses for %s", PDC_sysname());
 
     SP->c_buffer = malloc(_INBUFSIZ * sizeof(int));
     if (!SP->c_buffer)
