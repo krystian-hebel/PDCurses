@@ -1,6 +1,13 @@
 #include <curses.h>
 #include <panel.h>
+
+#ifdef EFI_FUNCTION_WRAPPER
+#include <efi.h>
+#include <efilib.h>
+#include "../efi/pdcefi.h"
+#else
 #include <stdlib.h>
+#endif
 
 PANEL *p1, *p2, *p3, *p4, *p5;
 WINDOW *w4, *w5;
@@ -114,12 +121,18 @@ void fill_panel(PANEL *pan)
             mvwaddch(win, y, x, num);
 }
 
+#ifdef EFI_FUNCTION_WRAPPER
+EFI_STATUS EFIAPI efi_main(EFI_HANDLE handle, EFI_SYSTEM_TABLE *systable)
+{
+    InitializeLib(handle, systable);
+#else
 int main(int argc, char **argv)
 {
-    int itmp, y;
-
     if (argc > 1 && atol(argv[1]))
         nap_msec = atol(argv[1]);
+#endif
+
+    int itmp, y;
 
 #ifdef XCURSES
     Xinitscr(argc, argv);

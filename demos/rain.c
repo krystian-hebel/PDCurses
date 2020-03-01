@@ -27,8 +27,16 @@
  ****************************************************************************/
 
 #include <curses.h>
+
+
+#ifdef EFI_FUNCTION_WRAPPER
+#include <efi.h>
+#include <efilib.h>
+#include "../efi/pdcefi.h"
+#else
 #include <stdlib.h>
 #include <time.h>
+#endif
 
 /* rain 1980-11-03 EPS/CITHEP */
 
@@ -53,8 +61,17 @@ static int next_j(int j)
     return j;
 }
 
-int main(int argc, char *argv[])
+#ifdef EFI_FUNCTION_WRAPPER
+#define EXIT_SUCCESS	EFI_SUCCESS
+
+EFI_STATUS EFIAPI efi_main(EFI_HANDLE handle, EFI_SYSTEM_TABLE *systable)
 {
+    InitializeLib(handle, systable);
+#else
+int main(int argc, char **argv)
+{
+#endif
+
     time_t seed;
     int x, y, j, r, c;
     static int xpos[5], ypos[5];

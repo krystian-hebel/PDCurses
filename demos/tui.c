@@ -6,12 +6,18 @@
  * Date   : 1993-02-25
  */
 
+#ifdef EFI_FUNCTION_WRAPPER
+#include <efi.h>
+#include <efilib.h>
+#include "../efi/pdcefi.h"
+#else
 #include <ctype.h>
 #include <curses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#endif
 #include "tui.h"
 
 void statusmsg(char *);

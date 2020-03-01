@@ -46,6 +46,11 @@
 
 #include <curses.h>
 
+#ifdef EFI_FUNCTION_WRAPPER
+#include <efi.h>
+#include <efilib.h>
+#endif
+
 void lil(WINDOW *);
 void midtop(WINDOW *);
 void bigtop(WINDOW *);
@@ -82,8 +87,15 @@ WINDOW *treescrn, *treescrn2, *treescrn3, *treescrn4, *treescrn5,
        *bigdeer2, *bigdeer3, *bigdeer4, *lookdeer0, *lookdeer1,
        *lookdeer2, *lookdeer3, *lookdeer4, *w_holiday, *w_del_msg;
 
+#ifdef EFI_FUNCTION_WRAPPER
+EFI_STATUS EFIAPI efi_main(EFI_HANDLE handle, EFI_SYSTEM_TABLE *systable)
+{
+    InitializeLib(handle, systable);
+#else
 int main(int argc, char **argv)
 {
+#endif
+
     int loopy;
 
 #ifdef XCURSES

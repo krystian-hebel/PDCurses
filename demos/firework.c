@@ -1,8 +1,16 @@
 #include <curses.h>
+
+
+#ifdef EFI_FUNCTION_WRAPPER
+#include <efi.h>
+#include <efilib.h>
+#include "../efi/pdcefi.h"
+#else
 #include <stdlib.h>
 #include <time.h>
+#endif
 
-#define DELAYSIZE 200
+#define DELAYSIZE 40
 
 void myrefresh(void);
 void get_color(void);
@@ -14,8 +22,15 @@ short color_table[] =
     COLOR_RED, COLOR_MAGENTA, COLOR_YELLOW, COLOR_WHITE
 };
 
+#ifdef EFI_FUNCTION_WRAPPER
+EFI_STATUS EFIAPI efi_main(EFI_HANDLE handle, EFI_SYSTEM_TABLE *systable)
+{
+    InitializeLib(handle, systable);
+#else
 int main(int argc, char **argv)
 {
+#endif
+
     time_t seed;
     int start, end, row, diff, flag, direction;
     short i;

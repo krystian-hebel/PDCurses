@@ -3,11 +3,19 @@
  *  (formerly newdemo)   illustrates the use of colors for text output.
  */
 
+#include <curses.h>
+
+#ifdef EFI_FUNCTION_WRAPPER
+#include <efi.h>
+#include <efilib.h>
+#include "../efi/pdcefi.h"
+#define SIGINT	0
+#else
 #include <signal.h>
 #include <string.h>
-#include <curses.h>
 #include <stdlib.h>
 #include <time.h>
+#endif
 
 int WaitForUser(void);
 int SubWinTest(WINDOW *);
@@ -205,8 +213,14 @@ void trap(int sig)
     }
 }
 
+#ifdef EFI_FUNCTION_WRAPPER
+EFI_STATUS EFIAPI efi_main(EFI_HANDLE handle, EFI_SYSTEM_TABLE *systable)
+{
+    InitializeLib(handle, systable);
+#else
 int main(int argc, char **argv)
 {
+#endif
     WINDOW *win;
     chtype save[80], ch;
     time_t seed;
@@ -229,7 +243,7 @@ int main(int argc, char **argv)
 
     curs_set(0);
 
-#if !defined(__TURBOC__) && !defined(OS2)
+#if !defined(__TURBOC__) && !defined(OS2) && !defined(EFI_FUNCTION_WRAPPER)
     signal(SIGINT, trap);
 #endif
     noecho();

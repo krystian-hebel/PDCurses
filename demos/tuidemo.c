@@ -11,10 +11,17 @@
  *                  version of the 'testcurs' program.
  */
 
+#ifdef EFI_FUNCTION_WRAPPER
+#include <efi.h>
+#include <efilib.h>
+#include "../efi/pdcefi.h"
+#else
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+#endif
+
 #include "tui.h"
 
 /* change this if source at other location */
@@ -218,9 +225,21 @@ void subsub(void)
 
 /***************************** start main menu  ***************************/
 
+
+#ifdef EFI_FUNCTION_WRAPPER
+#include <efi.h>
+#include <efilib.h>
+#include "../efi/pdcefi.h"
+#define EXIT_SUCCESS	EFI_SUCCESS
+
+EFI_STATUS EFIAPI efi_main(EFI_HANDLE handle, EFI_SYSTEM_TABLE *systable)
+{
+    InitializeLib(handle, systable);
+#else
 int main(int argc, char **argv)
 {
     setlocale(LC_ALL, "");
+#endif
 
     startmenu(MainMenu, "TUI - 'textual user interface' demonstration program");
 

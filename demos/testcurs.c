@@ -10,9 +10,16 @@
 # define _XOPEN_SOURCE_EXTENDED 1
 #endif
 
+#ifdef EFI_FUNCTION_WRAPPER
+#include <efi.h>
+#include <efilib.h>
+#include "../efi/pdcefi.h"
+#else
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#endif
+
 #include <curses.h>
 
 #ifdef WACS_S1
@@ -107,8 +114,26 @@ COMMAND command[MAX_OPTIONS] =
 
 int width, height;
 
-int main(int argc, char *argv[])
+#ifdef EFI_FUNCTION_WRAPPER
+char *setlocale(int cat, const char *loc)
 {
+    return NULL;
+}
+
+static inline int isprint(int c)
+{
+	return (c > 32 && c < 127);
+}
+
+EFI_STATUS EFIAPI efi_main(EFI_HANDLE handle, EFI_SYSTEM_TABLE *systable)
+{
+    int argc = 0;
+    char **argv = NULL;
+    InitializeLib(handle, systable);
+#else
+int main(int argc, char **argv)
+{
+#endif
     WINDOW *win;
     int key, old_option = -1, new_option = 0;
     bool quit = FALSE;
